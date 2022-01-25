@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>黑客帝国绿色代码</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<canvas id="fb"></canvas>
+</body>
+
+
+
+
+
+
+
+<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+body {
+	background: black;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+}
+canvas {
+	width:100%;
+	height:100%;
+	position: absolute;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+	var canvas = document.getElementById("canvas")
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
+	var ctx = canvas.getContext("2d")
+	var particlesArray = []
+	var fontsize = 24
+	var str = "仆はもう一人で 投げ舍てられた  空カンのようだ 互いのすべてを 知りつくすまでが 爱ならば いっそ 永久(とわ)に眠ろうか… 世界が终るまでは 离れる事もない"
+	ctx.font = fontsize + "px Arial"
+	// 设置粒子总数
+	var count = 80
+	var cfb = document.getElementById("fb")
+	cfb.width = window.innerwidth
+	cfb.height = window.innerHeight
+	var ctxfb = cfb.getContext("2d")
+	for (let i = 0; i < cfb.height; i+=3) {
+		ctxfb.moveTo(0, i)
+		ctxfb.lineTo(cfb.width, i)
+		ctxfb.stroke()
+	}
+
+	class Particle {
+		constructor() {
+			// 设置粒子初始位置
+			this.x = (Math.random() * (canvas.width / 24) | 0) * 24 
+			this.y = Math.random() * canvas.height
+			this.size = fontsize
+		}
+		update() {
+			this.y += this.size
+		}
+		draw() {
+			ctx.fillStyle = "green"
+			ctx.fillText(str[
+				Math.random() * str.length | 0
+			], this.x, this.y)
+		}
+	}
+	function init() {
+		for (let i = 0; i < count; i++) {			
+			particlesArray.push(new Particle())
+		}
+	}
+	init()
+	function draw() {
+		// 不断用半透明的黑色覆盖画上去的字符，渐变的目的
+		ctx.globalAlpha = 0.1		
+		ctx.fillStyle = "black" 
+		ctx.fillRect(0, 0, canvas.width, canvas.height)
+		ctx.globalAlpha = 1
+		for (let i = 0; i < particlesArray.length; i++) {	
+			// 改变字符位置，可以做到渐变下落的效果，下落的目的		
+			particlesArray[i].update()
+			particlesArray[i].draw()
+			if (particlesArray[i].y > canvas.height) {
+				particlesArray[i].y = 0
+				particlesArray[i].x = (Math.random() * canvas.width / 24 | 0) * 24
+			}
+		}
+	}
+	// for (let i = 0; i < 10; i++) {
+	// 	draw();
+	// }
+	setInterval(draw, 100)
+</script>	
+
+
+
+
+
+
+</html>

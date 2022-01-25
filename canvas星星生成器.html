@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>canvas星星生成器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">	
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<div class="toolbar">
+		<input type="range" id="radius" min="1" max="300" value="150" />
+		<input type="range" id="inset" min="1" max="300" value="50" />
+		<input type="range" id="shapes" min="1" max="20" value="5" />
+		<input type="range" id="fillcolor" min="0" max="360" value="200" />
+	</div>
+	<div class="info">
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+	</div>
+</body>
+<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	background: #333;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+canvas {
+	width:100%;
+	height:100%;
+	filter: drop-shadow(10px 10px 5px black);
+}
+.info {
+	position: fixed;
+	left: 10px;
+	top: 10px;
+	color: gray;
+}
+.toolbar {
+	width: 600px;
+	height: 100px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+.toolbar input {
+	height: 100%;
+}
+</style>
+<script>
+	var canvas = document.getElementById("canvas")
+	canvas.width = 600
+	canvas.height = 600
+	var ctx = canvas.getContext("2d")
+	var radius = document.getElementById("radius")
+	var inset = document.getElementById("inset")
+	var shapes = document.getElementById("shapes")
+	var fillcolor = document.getElementById("fillcolor")
+	var infos = document.getElementsByClassName("info")[0].children
+	function draw(radius,inset,n,c) {
+		ctx.clearRect(0,0,canvas.width,canvas.height)
+		ctx.save() // 保存当前的绘图状态
+		ctx.translate(canvas.width/2, canvas.height/2) // 重新映射画布位置
+		ctx.beginPath()
+		ctx.fillStyle="hsl("+c+", 80%, 50%)" // 设置填充的颜色		
+		ctx.strokeStyle="hsl("+c+", 80%, 50%)" // 设置笔的颜色
+		console.log("hsl("+c+", 80%, 50%)")
+		ctx.moveTo(0, -radius)
+		var count = n
+		for (var i = 0; i < n; i++) {
+			ctx.rotate(Math.PI*2/count/2)
+			ctx.lineTo(0,-inset)
+			ctx.rotate(Math.PI*2/count/2)
+			ctx.lineTo(0,-radius)			
+		}
+		ctx.closePath() // 创建从当前点回到起始点的路径
+		ctx.stroke() // 绘制已定义的路径
+		ctx.fill() // 填充当前绘图
+		ctx.restore() // 恢复之前保存的绘图状态，用来恢复Canvas旋转、缩放等之后的状态
+		infos[0].innerHTML="外径:"+radius
+		infos[1].innerHTML="内径:"+inset
+		infos[2].innerHTML=n+" 角星"
+		infos[3].innerHTML="色轮值:"+c+"deg"		
+	}
+	draw(radius.value,inset.value,shapes.value,fillcolor.value)
+	Array.prototype.forEach.call(document.getElementsByTagName("input"), function(eve){
+		eve.addEventListener("input", function(){
+			draw(radius.value,inset.value,shapes.value,fillcolor.value)
+		})
+	})
+</script>	
+
+
+
+
+
+
+</html>

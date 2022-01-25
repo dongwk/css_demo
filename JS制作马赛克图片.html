@@ -1,0 +1,88 @@
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<!-------------- 需要在服务器中运行，canvas设置本地图片有跨域问题 ------------------->
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<input type="range" id="range" min="1" max="200" value="10" />
+</body>
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<!----------------------------------- 样式 -------------------------------------->
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<style type="text/css">
+    * {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+    body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        background: #333;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    canvas {
+        border: 1px solid white;
+    }
+    #range {
+        width: 80%;
+        margin-top: 20px;
+    }
+</style>
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<!----------------------------------- 脚本 -------------------------------------->
+<!------------------------------------------------------------------------------->
+<!------------------------------------------------------------------------------->
+<script>
+    var canvas = document.getElementById("canvas")
+    var ctx = canvas.getContext("2d")
+    var img = new Image()
+    img.src = "../images/building.jpg"
+    var range = document.getElementById("range")
+    img.addEventListener("load", function () {
+        function draw(count) {
+            var iw = parseInt(img.width / count)
+            var ih = parseInt(img.height / count)
+            canvas.width = img.width
+            canvas.height = img.height
+            ctx.drawImage(img, 0, 0, iw, ih)
+            var image = new Image()
+            image = ctx.getImageData(0, 0, iw, ih)
+            canvas.width = iw * count
+            canvas.height = ih * count
+            // image.data 为图像数据，对象中的每个像素，都存在着四方面的信息，即 RGBA 值
+            for (let i = 0; i < image.data.length / 4; i++) {
+                red = image.data[i * 4]
+                green = image.data[i * 4 + 1]
+                blue  = image.data[i * 4 + 2]
+                color = "rgb(" + red + "," + green + "," + blue + ")"
+                ctx.fillStyle = color
+                x = (i % iw) * count
+                y = parseInt(i / iw) * count
+                ctx.fillRect(x, y, count, count)
+                ctx.strokeStyle = "rgba(0,0,0,0.5)"
+                ctx.strokeRect(x, y, count, count)
+            }
+        }
+        draw(8)
+        range.addEventListener("input", function () {
+            draw(range.value)
+        })
+    })
+
+</script>
+</html>

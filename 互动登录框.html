@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>互动登录框</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+	
+</head>
+<body>
+	<div class="main">
+		<ul>
+			<li><i class="fa fa-video" id="cam"></i></li>
+			<li><input type="text" placeholder="username"/></li>
+			<li><input type="password" placeholder="password"/></li>
+			<li><button>Login</button></li>
+		</ul>
+	</div>
+</body>
+
+
+
+
+
+
+
+<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+body {
+	background: #333;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.main{
+	width: 400px;
+	height: 600px;
+	border: 1px solid white;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+li {
+	text-align: center;
+	width: 100%;
+	margin-bottom: 20px;
+}
+li i{
+	color: #2ed573;
+	font-size: 150px;
+	padding-bottom: 20px;
+}
+input {
+	width: 100%;
+	display: block;
+	font-size: 25px;
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid white;
+	color: white;
+	padding: 10px;
+	outline: none;
+}
+button {
+	font-size: 25px;
+	padding: 10px 25px;
+	border-radius: 10px;
+	background: transparent;
+	border: 1px solid white;
+	color: white;
+	text-transform: uppercase;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+	var cam = document.getElementById("cam")
+	var cRect = cam.getBoundingClientRect()
+	var origin = {
+		x: cRect.left + 75,
+		y: cRect.top + 75
+	}
+	var inputs = document.getElementsByTagName("input")
+	for (let i = 0; i < inputs.length; i++) {
+		inputs[i].addEventListener("focus", function(){
+			if (document.activeElement.getAttribute("type") == "text") {
+				cam.style.color = "#2ed573"
+				cam.style.textShadow = "0 0 10px white,0 0 20px white,0 0 40px white"
+			} 
+			else {
+				cam.style.textShadow = "none"
+				cam.style.color = "#ff4757"
+				cam.style.transform = "rotate(-135deg)"
+			}
+		})
+	}
+
+	window.addEventListener("mousemove", function(evt){
+		var tx = 0
+		var ty = 0
+		if (document.activeElement.tagName != "INPUT") {
+			tx = evt.x
+			ty = evt.y
+			cam.style.textShadow="none"
+			cam.style.color = "#23d573"
+			draw(tx, ty)
+		}
+	})
+
+	document.activeElement.addEventListener("keyup", function(evt){
+		if (document.activeElement.getAttribute("type") == "text") {
+			var tinput = document.activeElement
+			var span = document.createElement("span")
+			window.document.body.appendChild(span)
+			span.style.position = "fixed"
+			span.style.fontSize = "25px"
+			span.innerHTML = tinput.value
+			tx = tinput.getBoundingClientRect().left + span.clientWidth + 10
+			ty = tinput.getBoundingClientRect().top + 10 + 25
+			window.document.body.removeChild(span)
+			draw(tx, ty)
+		}
+	})
+
+	function draw(valx, valy) {
+		var ex = valx - origin.x
+		var ey = valy - origin.y
+		z = 360 * Math.atan(ey / ex) / (2 * Math.PI) + 180 
+		console.log(deg)
+		console.log(origin.y +" - "+ origin.x)
+		console.log(Math.atan(origin.y / origin.x))
+		if (ex > 0) {
+			deg += 180
+		}
+		cam.style.transform = "rotate(" + deg + "deg)"
+	}
+</script>	
+
+
+
+
+
+
+</html>

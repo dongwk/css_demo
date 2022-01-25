@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>制作带有拖影效果的canvas粒子</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+
+
+
+
+
+
+
+<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	background: black;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#canvas {
+	box-sizing: border-box;
+	border:1px solid white;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+	var canvas = document.getElementById("canvas")
+	canvas.width = 1280
+	canvas.height = 720
+	var ctx = canvas.getContext("2d")
+	var particlesArray = []
+	var count = 2000
+	var img = new Image()
+	img.src = "building.jpg"
+	class Particle {
+		constructor() {
+			this.x = Math.random() * canvas.width
+			this.y = Math.random() * canvas.height
+			this.speed = 0
+			this.vy = Math.random() + 0.5
+			this.vx = Math.random() - 0.5
+			this.size = Math.random() * 1.5 + 1
+		}
+		update() {
+			this.y += this.vy
+			this.x += this.vx
+			if (this.y >= canvas.height) {
+				this.y = 0
+				this.x = Math.random() * canvas.width
+			}
+		}
+		draw() {
+			ctx.beginPath()
+			ctx.fillStyle = "white"
+			ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+			ctx.fill()
+		}
+	}
+	function init() {
+		for (var i = 0; i < count; i++) {
+			particlesArray.push(new Particle())
+		}
+	}
+	init()
+	img.addEventListener("load", function() {
+		function animate() {
+			ctx.drawImage(img, 0, 0)
+			ctx.globalAlpha = 0.05
+			ctx.fillStyle = 'rgb(0,0,0)'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
+			for (var i = 0; i < particlesArray.length; i++) {
+				particlesArray[i].update()
+				particlesArray[i].draw()
+			}
+			requestAnimationFrame(animate) /* requestAnimationFrame是浏览器用于定时循环操作的一个接口，根据浏览器的刷新频率执行，例如：显示器有固定的刷新频率（60Hz或75Hz），每秒最多只能重绘60次或75次*/
+		}
+		animate()
+	})
+</script>	
+
+
+
+
+
+
+</html>
